@@ -7,6 +7,7 @@ import numpy as np
 from bottleneck import bench
 from pandas.core.interchange.from_dataframe import primitive_column_to_ndarray
 from pygments.lexer import words
+from Proccess_mails import load_tokenized_texts
 
 
 class MyArray:
@@ -251,8 +252,17 @@ class SMSClassifier:
 
         all = self.data_ham + self.data_spam
         test_line = all[5500]
-        print(test_line)
+        #print(test_line)
         print(f"总行数",len(all))
+
+        data_1 = []
+        labels_1 = []
+
+        root = "/Volumes/Samsung T7/Visual Studio Code/python_language/machine_learning/sms+spam+collection/test-mails"
+        data_1, labels_1 = load_tokenized_texts(root)
+
+        print(f"共读取 {len(data_1)} 封邮件")
+        print(f"训练数据", len(labels_1))
 
         wo = self.read()
         data = self.classification(wo)
@@ -274,13 +284,13 @@ class SMSClassifier:
         # print("标签列表：", labels)
         # print("内容列表：", features)
 
-        print(f"|||||||",len(features))
+        # print(f"|||||||",len(features))
         q = 0
         test_mail = []
-        while q < len(features):
+        while q < len(labels_1):
             log_prob_spam = 0
             log_prob_ham = 0
-            test_line = features[q]
+            test_line = labels_1[q]
             for word in test_line:
                 # print(type(self.span_words_probs_dic))  # 应该输出 <class 'dict'>
                 p_word_given_spam = self.span_words_probs_dic.get(word, 1e-10)
@@ -306,8 +316,8 @@ class SMSClassifier:
         # test_mail 预测结果
         # labels 标签
 
-        print(len(test_mail))
-        print(len(labels))
+        #print(len(test_mail))
+        #print(len(labels))
 
         x = 1
         right_count = 0
@@ -318,11 +328,11 @@ class SMSClassifier:
 
 
             x += 1
-        print(f"test_mail",test_mail)
-        print(f"labels",labels)
+        #print(f"test_mail",test_mail)
+        #print(f"labels",labels)
         right_probability = right_count / len(test_mail)
-        print(right_count)
-        print(len(test_mail))
+        #print(right_count)
+        #print(len(test_mail))
         print(f"预测准确率为：" , right_probability)
 
 
